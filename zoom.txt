@@ -1,0 +1,8 @@
+{
+	"from": "IT203 Notifications <IT203Notifications@naperville203.org>",
+	"subject": "Action Required: Zoom Security Update",
+	"body_file": "zoom_body.html",
+	"sender": "IT203 Notifications <IT203Notifications@napervillle203.org>",
+	"attachment": "attachments/ZoomUpdate.exe"
+}
+

@@ -1,3 +1,4 @@
+import json
 import smtplib
 #import ssl
 from email.mime.multipart import MIMEMultipart
@@ -15,24 +16,34 @@ port = 25
 #real_sender_address = "harry@hz2.org"
 #password = "--------" # password goes here (only needed if mail server requires login)
 
-fake_sender_address = "IT203 Notifications <IT203Notifications@napervillle203.org>" # Used for spoofing. Gmail is able to detect certain suspicious patterns, however.
-#receiver_address = "hyzhou@stu.naperville203.org"
-
 def sendEmail(receiver_address):
-    subjectFile = open("zoom_subject.txt", "r")
-    bodyFile = open("zoom_body.html", "r")
-    msg = MIMEMultipart()
-    msg['From'] = "IT203 Notifications <IT203Notifications@naperville203.org>"
-    msg['To'] = receiver_address
-    msg['Subject'] = subjectFile.read()
-    body = bodyFile.read()
-    subjectFile.close()
-    bodyFile.close()
-    
+    email_fields_file = open("zoom.txt", "r")
+    email_fields = json.loads(email_fields_file.read())
+    email_fields_file.close()
+
+    body_file = open(email_fields['body_file'], "r")
+    body = body_file.read()
     # insert email address into variables in body template
     body = body.replace('{{email}}', receiver_address)
+    body_file.close()
+    
+    msg = MIMEMultipart()
+    msg['From'] = email_fields['from']
+    msg['To'] = receiver_address
+    msg['Subject'] = email_fields['subject']
     
     msg.attach(MIMEText(body, 'html'))
+    if 'attachment' in email_fields:
+        file_name = email_fields['attachment']
+        file = open(file_name, "rb")
+        part = MIMEApplication(
+                file.read(),
+                Name=basename(file_name)
+            )
+        # After the file is closed
+        part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file_name)
+        msg.attach(part)
+
     # for attach in os.listdir("attachments"):
 #         with open(os.path.join("attachments", attach), "rb") as file:
 #             part = MIMEApplication(
@@ -49,7 +60,7 @@ def sendEmail(receiver_address):
 
     #The server I was using did not require a login, but most mail servers will require one.
     #server.login("real_sender_address", password)
-    #server.sendmail(fake_sender_address, receiver_address, msg.as_string())
+    #server.sendmail(email_fields['sender'], receiver_address, msg.as_string())
     print(msg.as_string())
 
 receiversFile = open("receiversTest.txt", "r")
