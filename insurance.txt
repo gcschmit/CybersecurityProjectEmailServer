@@ -1,0 +1,7 @@
+{
+	"from": "Michelle Wavering <mwavering@naperville203.org>",
+	"subject": "Important 2021 Health Insurance Confirmation",
+	"body_file": "insurance_body.html",
+	"sender": "Michelle Wavering <mwavering@napervillle203.org>",
+}
+
